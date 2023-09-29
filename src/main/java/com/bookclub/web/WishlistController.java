@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,19 +13,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.bookclub.model.WishlistItem;
-import com.bookclub.service.impl.MemWishlistDao;
+import com.bookclub.service.dao.MongoWishlistDao;
+import com.bookclub.service.dao.WishlistDao;
 
 @Controller
 @RequestMapping("/wishlist")
 public class WishlistController {
 
+	WishlistDao wishlistDao = new MongoWishlistDao();
+
+	@Autowired
+	private void setWishlistDao(WishlistDao wishlistDao) {
+		this.wishlistDao = wishlistDao;
+	}
+	
 	@GetMapping
     public String showWishlsit(Model model) {
-		System.out.println("list");
-		MemWishlistDao memWishlistDao = new MemWishlistDao();
-		List<WishlistItem> wishlist = memWishlistDao.list();
+		List<WishlistItem> wishlist = wishlistDao.list();
 		model.addAttribute("wishlist", wishlist);
-		System.out.println(wishlist);
 		return "wishlist/list";
     }
 	@GetMapping(value="/new")
@@ -36,12 +42,10 @@ public class WishlistController {
 
 	@PostMapping(value="/addWishlistItem")
 	public String addWishlistItemm(@Valid WishlistItem wishlistItem, BindingResult bindingResults) {
-		System.out.println("empty");
-		System.out.println(wishlistItem.toString());
-		System.out.println(bindingResults.toString());
-		if(bindingResults.hasErrors()) {
+		if (bindingResults.hasErrors()) {
 			return "wishlist/new";
 		}
+		wishlistDao.add(wishlistItem); // add the record to MongoDB
 		return "redirect:/wishlist";
 	}
 }
