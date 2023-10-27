@@ -8,7 +8,7 @@ public interface GenericCrudDao<E, K> {
 
     void update(E entity);
 
-    boolean remove(String entity);
+    boolean remove(K entity);
 
     List<E> list(K key); // Return a list of objects of type E.
 

@@ -27,6 +27,7 @@ public class MongoWishlistDao implements WishlistDao {
     if (wishlistItem != null) {
       wishlistItem.setIsbn(entity.getIsbn());
       wishlistItem.setTitle(entity.getTitle());
+      wishlistItem.setUsername(entity.getUsername());
       mongoTemplate.save(wishlistItem);
     }
   }
@@ -43,10 +44,10 @@ public class MongoWishlistDao implements WishlistDao {
   }
 
   @Override
-  public List<WishlistItem> list(String value) {
+  public List<WishlistItem> list(String username) {
     Query query = new Query();
 
-
+    query.addCriteria(Criteria.where("username").is(username));
     return mongoTemplate.find(query, WishlistItem.class);
   }
 
