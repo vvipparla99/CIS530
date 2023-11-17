@@ -60,7 +60,7 @@ tbody, td, tfoot, th, thead, tr {
 
         const http = new HttpClient();
 
-        http.get('https://krasso-bookclub.herokuapp.com/api/wishlist').then(res => {
+        http.get('https://krasso-bookclub-5365fd28d6cb.herokuapp.com/api/wishlist').then(res => {
             console.log(res);
             document.getElementById("wishlist").innerHTML = buildTable(res);
         }).catch(e => {
